@@ -1,0 +1,13 @@
+[package]
+name = "game_of_life"
+version = "0.1.0"
+authors = ["Anthony Poncet <anthonyponcet9@gmail.com>"]
+description = "Simple Conway's game of life"
+license = "MIT"
+categories = ["games"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+piston_window = "*"
+rand = "*"
