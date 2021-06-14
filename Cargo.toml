@@ -10,4 +10,5 @@ categories = ["games"]
 
 [dependencies]
 piston_window = "*"
+pistoncore-event_loop = "*"
 rand = "*"

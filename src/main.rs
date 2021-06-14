@@ -7,7 +7,7 @@ use rand::prelude::*;
 fn main() {
     let window_size: f64 = 500.0;
     let square_size: f64 = 10.0;
-    let alive_threshold = 2;
+    let alive_threshold = 10;
 
     let white = [1.0, 1.0, 1.0, 1.0];
     let black = [0.0, 0.0, 0.0, 1.0];
@@ -27,25 +27,30 @@ fn main() {
         grid.push(row)
     }
 
-
     let mut window: PistonWindow = WindowSettings::new("Conway's game of life", [window_size, window_size])
         .exit_on_esc(true)
         .build()
         .unwrap();
 
-    while let Some(event) = window.next() {
-        window.draw_2d(&event, |context, graphics, _device| {
-            clear([1.0; 4], graphics);
+    let mut events = Events::new(EventSettings { max_fps: 8, ups: 16, ups_reset: 0, swap_buffers: true, bench_mode: false, lazy: false});
 
-            for (row_index, row) in grid.iter().enumerate() {
-                for (col_index, col) in row.iter().enumerate() {
-                    let color = if *col { black } else { white };
-                    rectangle(color, [square_size * (row_index as f64), square_size * (col_index as f64), square_size, square_size], context.transform, graphics);
+    while let Some(e) = events.next(&mut window) {
+        if let Some(_) = e.render_args() {
+            window.draw_2d(&e, |context, graphics, _device| {
+                clear([1.0; 4], graphics);
+
+                for (row_index, row) in grid.iter().enumerate() {
+                    for (col_index, col) in row.iter().enumerate() {
+                        let color = if *col { black } else { white };
+                        rectangle(color, [square_size * (row_index as f64), square_size * (col_index as f64), square_size, square_size], context.transform, graphics);
+                    }
                 }
-            }
+            });
+        }
 
-            println!("redraw")
-        });
+        if let Some(_) = e.update_args() {
+            grid = next(grid);
+        }
     }
 }
 
@@ -59,7 +64,7 @@ fn next(grid: Vec<Vec<bool>>) -> Vec<Vec<bool>> {
         let mut row = vec![false; grid_size];
         for j in 0..grid_size {
             let mut count = 0;
-            let indexes: [(isize, isize); 8] = [(-1, -1), (-1, 0), (-1, 1), (-1, 0), (0, 1), (1, -1), (1, 0), (1, 1)];
+            let indexes: [(isize, isize); 8] = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)];
 
             for (x, y) in indexes.iter() {
                 let xpos = i as isize + x;
@@ -71,10 +76,11 @@ fn next(grid: Vec<Vec<bool>>) -> Vec<Vec<bool>> {
                 }
             }
 
-            let current = row[j];
+            let current = grid[i][j];
+            //println!("[{} - {}]: {} - {}", i, j, current, count);
             if current && (count == 2 || count == 3) {
                 row[j] = true;
-            } else if !current && count == 3 {
+            } else if !current && (count == 3) {
                 row[j] = true;
             } else {
                 row[j] = false;
