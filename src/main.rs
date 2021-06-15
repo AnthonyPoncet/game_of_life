@@ -5,9 +5,9 @@ use piston_window::*;
 use rand::prelude::*;
 
 fn main() {
-    let window_size: f64 = 500.0;
+    let window_size: f64 = 750.0;
     let square_size: f64 = 10.0;
-    let alive_threshold = 10;
+    let alive_threshold = 35;
 
     let white = [1.0, 1.0, 1.0, 1.0];
     let black = [0.0, 0.0, 0.0, 1.0];
@@ -32,7 +32,7 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut events = Events::new(EventSettings { max_fps: 8, ups: 16, ups_reset: 0, swap_buffers: true, bench_mode: false, lazy: false});
+    let mut events = Events::new(EventSettings { max_fps: 16, ups: 16, ups_reset: 0, swap_buffers: true, bench_mode: false, lazy: false});
 
     while let Some(e) = events.next(&mut window) {
         if let Some(_) = e.render_args() {
